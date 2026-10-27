@@ -128,7 +128,7 @@ $('serve').onclick=()=>{
   draw();
   stage();
 };
-if(s.spread<90){msg('面糊还没摊开，多画几圈！');return}if(!s.egg||!s.greens||!s.sauce){msg('还缺食材，按步骤完成这张煎饼');return}clearInterval(customerTimer);s.coins+=18;s.orders++;msg('出餐成功！金币 +¥18 🎉');customerNumber++;setTimeout(startCustomer,1200);;s.spread=0;s.egg=s.greens=s.sauce=false;draw();stage()};$('reset').onclick=()=>{s.spread=0;s.egg=s.greens=s.sauce=false;s.left=3;draw();stage();msg('制作台整理好了，重新开始吧')};
+$('reset').onclick=()=>{s.spread=0;s.egg=s.greens=s.sauce=false;s.left=3;draw();stage();msg('制作台整理好了，重新开始吧')};
 const ghost=$('dragGhost');
 const emojiFor={batter:'🥣',egg:'🥚',greens:'🥬',sauce:'🫙'};
 function moveGhost(e){
