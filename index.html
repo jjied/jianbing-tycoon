@@ -163,7 +163,7 @@ function startCustomer(){
   face.textContent='🧑🏻';
   bubble.textContent='老板，来份煎饼！';
 
-  const order=$('.order');
+  const order=document.querySelector('section.order');
   order.querySelector('.eyebrow').textContent=
     '今日第 '+customerNumber+' 位顾客';
   order.querySelector('h2').textContent='经典薄脆煎饼';
