@@ -44,6 +44,32 @@
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-4px)}
 }
+  
+  /* 顾客开心时跳一下 */
+.customer-figure.happy {
+  animation: customer-happy .45s ease-in-out 3;
+}
+
+@keyframes customer-happy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-13px) scale(1.12); }
+}
+
+/* 爱心飘起来 */
+.customer-heart {
+  position: absolute;
+  top: 28px;
+  right: 5px;
+  font-size: 23px;
+  pointer-events: none;
+  animation: heart-float 1.2s ease-out forwards;
+}
+
+@keyframes heart-float {
+  0% { opacity: 0; transform: translateY(0) scale(.5); }
+  25% { opacity: 1; transform: translateY(-10px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-45px) scale(1); }
+}
 </style></head><body><div class="app"><header class="top"><div class="logo">🥞</div><div class="brand"><h1>煎饼摊大亨</h1><p>街角小摊 · 今日试营业</p></div><div class="stats"><div class="stat">金币<b id="coins">¥ 0</b></div><div class="stat">订单<b id="orders">0</b></div></div></header><section class="order"><div class="order-icon">🧑🏻‍🍳</div><div class="order-copy"><div class="eyebrow">今日第一单 · 现做现卖</div><h2>经典薄脆煎饼</h2><p>面糊 → 摊开 → 鸡蛋 → 生菜 → 刷酱</p></div><div class="pill">完成 +¥18</div></section><section class="scene"><div class="scene-head"><span>🍳 制作台</span><span id="stageLabel">第 1 步 / 摊面糊</span></div>
 <div class="customer-figure" id="customerFigure">
   <div class="customer-bubble" id="customerBubble">老板，来份煎饼！</div>
@@ -52,7 +78,57 @@
 <canvas id="game" width="520" height="480" aria-label="煎饼制作区域"></canvas><div class="hint" id="hint">先把「面糊」拖到鏊子中央</div></section><div class="progress-wrap"><span>煎饼完成度</span><div class="progress"><span id="progress"></span></div><b id="progressText">0%</b></div><div class="section-title">食材小托盘 <span style="font-size:10px;color:#9b7658;font-weight:normal">按住食材，拖到鏊子上</span></div><section class="tray"><button class="ingredient" data-k="batter"><span class="emoji">🥣</span><b>面糊</b><small id="batterCount">剩余 3 份</small></button><button class="ingredient" data-k="egg"><span class="emoji">🥚</span><b>鸡蛋</b><small>新鲜土鸡蛋</small></button><button class="ingredient" data-k="greens"><span class="emoji">🥬</span><b>生菜</b><small>清爽脆嫩</small></button><button class="ingredient" data-k="sauce"><span class="emoji">🫙</span><b>刷酱</b><small>秘制甜面酱</small></button></section><div class="bottom"><button class="action" id="reset">重新开始</button><button class="action primary" id="serve">🥡 完成并出餐</button></div><div class="note">试营业原型 · 支持触屏拖放与画圈摊面</div></div>
   <div class="drag-ghost" id="dragGhost" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
-<script>(()=>{const cv=document.querySelector('#game'),c=cv.getContext('2d'),$=id=>document.getElementById(id);let s={coins:0,orders:0,left:3,spread:0,egg:false,greens:false,sauce:false,drag:null,painting:false,lastAngle:null};const g={x:260,y:245,r:166};function rr(x,y,w,h,r,fill,stroke){c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=3;c.stroke()}}function draw(){c.clearRect(0,0,520,480);c.fillStyle='#bd9875';c.fillRect(0,0,520,480);for(let i=0;i<10;i++){c.strokeStyle=i%2?'#a98261':'#d0ad86';c.lineWidth=2;c.beginPath();c.moveTo(0,i*52+8);c.lineTo(520,i*52+8);c.stroke()}rr(20,18,480,48,10,'#ead1a7','#75513b');c.fillStyle='#72503b';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('小火慢煎 · 用心做好每一张',260,47);rr(52,84,416,332,25,'#8e6a4f','#654433');rr(65,96,390,307,20,'#d6b38a','#f2d9b0');c.fillStyle='#5c4b3d';c.beginPath();c.ellipse(g.x,g.y+7,g.r+8,g.r+8,0,0,Math.PI*2);c.fill();c.fillStyle='#4b4138';c.beginPath();c.ellipse(g.x,g.y,g.r+4,g.r+4,0,0,Math.PI*2);c.fill();c.fillStyle='#777066';c.beginPath();c.ellipse(g.x,g.y,g.r,g.r,0,0,Math.PI*2);c.fill();c.strokeStyle='#b8a68c';c.lineWidth=5;c.beginPath();c.ellipse(g.x,g.y,g.r-5,g.r-5,0,0,Math.PI*2);c.stroke();for(let i=0;i<18;i++){let a=i*Math.PI*2/18;c.strokeStyle='#8f8678';c.lineWidth=1.5;c.beginPath();c.moveTo(g.x+Math.cos(a)*125,g.y+Math.sin(a)*125);c.lineTo(g.x+Math.cos(a)*142,g.y+Math.sin(a)*142);c.stroke()}if(s.spread>0){let r=24+s.spread*1.22;c.fillStyle='#e7c98e';c.beginPath();c.arc(g.x,g.y,r,0,Math.PI*2);c.fill();c.strokeStyle='#b58a53';c.lineWidth=3;c.stroke();c.strokeStyle='#f7e2b2';c.lineWidth=2;c.beginPath();c.arc(g.x-4,g.y-4,r-6,0,Math.PI*2);c.stroke();if(s.egg){c.fillStyle='#fff1cc';c.beginPath();c.ellipse(g.x-25,g.y-12,28,23,-.2,0,Math.PI*2);c.fill();c.strokeStyle='#c6a778';c.lineWidth=2;c.stroke();c.fillStyle='#e7a44f';c.beginPath();c.arc(g.x-23,g.y-12,10,0,Math.PI*2);c.fill()}if(s.greens)for(let i=0;i<7;i++){let a=i*2.4,x=g.x+Math.cos(a)*r*.45,y=g.y+Math.sin(a)*r*.42;c.fillStyle=i%2?'#83965f':'#a9ba7a';c.beginPath();c.ellipse(x,y,15,8,a,0,Math.PI*2);c.fill();c.strokeStyle='#617449';c.lineWidth=1;c.stroke()}if(s.sauce){c.strokeStyle='#8b4d35';c.lineWidth=4;c.lineCap='round';for(let i=0;i<4;i++){c.beginPath();c.moveTo(g.x-r*.55,g.y-r*.25+i*15);c.quadraticCurveTo(g.x,g.y-r*.1+i*12,g.x+r*.55,g.y-r*.3+i*15);c.stroke()}}}else{c.strokeStyle='#eee0c5';c.lineWidth=2;c.setLineDash([7,7]);c.beginPath();c.arc(g.x,g.y,35,0,Math.PI*2);c.stroke();c.setLineDash([]);c.fillStyle='#fff0d3';c.font='bold 14px sans-serif';c.fillText('鏊子中央',260,g.y+6)}c.save();c.translate(410,365);c.rotate(-.55);rr(-7,-4,15,61,5,'#6c4b36','#493529');rr(-22,-29,44,34,8,'#b7b4a4','#62574b');c.restore();rr(25,380,78,26,6,'#d6bd8d','#8a684a');c.strokeStyle='#9b7658';for(let i=0;i<5;i++){c.beginPath();c.moveTo(33+i*14,382);c.lineTo(33+i*14,404);c.stroke()}}function inside(p){return Math.hypot(p.x-g.x,p.y-g.y)<g.r+15}function point(e){let r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*520/r.width,y:(e.clientY-r.top)*480/r.height}}function pct(){return Math.min(100,Math.round(s.spread/90*55+(s.egg?15:0)+(s.greens?15:0)+(s.sauce?15:0)))}function msg(t){let el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.classList.remove('show'),1700)}function stage(){let n=s.spread===0?1:s.spread<90?1:!s.egg?2:!s.greens?3:!s.sauce?4:5;let labels=['','摊面糊','打鸡蛋','加生菜','刷酱','可以出餐'];$('stageLabel').textContent='第 '+n+' 步 / '+labels[n];$('progress').style.width=pct()+'%';$('progressText').textContent=pct()+'%';$('coins').textContent='¥ '+s.coins;$('orders').textContent=s.orders;$('batterCount').textContent='剩余 '+s.left+' 份';document.querySelectorAll('.ingredient').forEach(b=>{let k=b.dataset.k;b.classList.toggle('disabled',(k==='batter'&&(s.left<=0||s.spread>0))||(k==='egg'&&(s.spread===0||s.egg))||(k==='greens'&&(s.spread===0||s.greens||!s.egg))||(k==='sauce'&&(s.spread===0||s.sauce||!s.greens)))});$('hint').textContent=s.spread===0?'按住「面糊」拖到鏊子中央':s.spread<90?'在鏊子上连续画圈，把面糊摊开':!s.egg?'把鸡蛋拖到煎饼上':!s.greens?'把生菜拖到煎饼上':!s.sauce?'把酱料拖到煎饼上':'做好啦！点击「完成并出餐」'}function add(k){if(k==='batter'){if(s.spread){msg('这张煎饼已经有面糊啦');return}s.left--;s.spread=8;msg('面糊落锅啦！继续画圈摊开')}else if(!s.spread){msg('先放面糊，再添加食材');return}else if(k==='egg'){s.egg=true;msg('咔！打入一颗新鲜鸡蛋')}else if(k==='greens'){if(!s.egg){msg('先加鸡蛋，再放生菜');return}s.greens=true;msg('加上一把清爽生菜')}else if(k==='sauce'){if(!s.greens){msg('先放生菜，再刷酱');return}s.sauce=true;msg('秘制酱香，马上就好！')}draw();stage()}document.querySelectorAll('.ingredient').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.classList.contains('disabled')){msg('按提示顺序添加食材哦');return}s.drag={key:b.dataset.k,button:b};b.style.opacity='.5';try{b.setPointerCapture(e.pointerId)}catch(_){}}));function release(e){if(!s.drag)return;let d=s.drag;d.button.style.opacity='';let r=cv.getBoundingClientRect(),over=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom,p=point(e);if(over&&inside(p))add(d.key);else msg('把食材拖到鏊子上哦');s.drag=null;draw();stage()}window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);cv.addEventListener('pointerdown',e=>{if(s.drag||!s.spread)return;let p=point(e);if(!inside(p))return;s.painting=true;s.lastAngle=Math.atan2(p.y-g.y,p.x-g.x);try{cv.setPointerCapture(e.pointerId)}catch(_){}});cv.addEventListener('pointermove',e=>{if(!s.painting)return;let p=point(e);if(!inside(p))return;let a=Math.atan2(p.y-g.y,p.x-g.x);if(s.lastAngle!==null){let d=Math.atan2(Math.sin(a-s.lastAngle),Math.cos(a-s.lastAngle));s.spread=Math.min(100,s.spread+Math.abs(d)*14+.25);draw();stage()}s.lastAngle=a});function end(){s.painting=false;s.lastAngle=null;if(s.spread>=90)msg('摊得很均匀！可以加配料啦')}cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);$('serve').onclick=()=>{if(customerTime<=0){msg('顾客已经离开啦，等下一位顾客吧');return}if(s.spread<90){msg('面糊还没摊开，多画几圈！');return}if(!s.egg||!s.greens||!s.sauce){msg('还缺食材，按步骤完成这张煎饼');return}clearInterval(customerTimer);s.coins+=18;s.orders++;msg('出餐成功！金币 +¥18 🎉');customerNumber++;setTimeout(startCustomer,1200);;s.spread=0;s.egg=s.greens=s.sauce=false;draw();stage()};$('reset').onclick=()=>{s.spread=0;s.egg=s.greens=s.sauce=false;s.left=3;draw();stage();msg('制作台整理好了，重新开始吧')};
+<script>(()=>{const cv=document.querySelector('#game'),c=cv.getContext('2d'),$=id=>document.getElementById(id);let s={coins:0,orders:0,left:3,spread:0,egg:false,greens:false,sauce:false,drag:null,painting:false,lastAngle:null};const g={x:260,y:245,r:166};function rr(x,y,w,h,r,fill,stroke){c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=3;c.stroke()}}function draw(){c.clearRect(0,0,520,480);c.fillStyle='#bd9875';c.fillRect(0,0,520,480);for(let i=0;i<10;i++){c.strokeStyle=i%2?'#a98261':'#d0ad86';c.lineWidth=2;c.beginPath();c.moveTo(0,i*52+8);c.lineTo(520,i*52+8);c.stroke()}rr(20,18,480,48,10,'#ead1a7','#75513b');c.fillStyle='#72503b';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('小火慢煎 · 用心做好每一张',260,47);rr(52,84,416,332,25,'#8e6a4f','#654433');rr(65,96,390,307,20,'#d6b38a','#f2d9b0');c.fillStyle='#5c4b3d';c.beginPath();c.ellipse(g.x,g.y+7,g.r+8,g.r+8,0,0,Math.PI*2);c.fill();c.fillStyle='#4b4138';c.beginPath();c.ellipse(g.x,g.y,g.r+4,g.r+4,0,0,Math.PI*2);c.fill();c.fillStyle='#777066';c.beginPath();c.ellipse(g.x,g.y,g.r,g.r,0,0,Math.PI*2);c.fill();c.strokeStyle='#b8a68c';c.lineWidth=5;c.beginPath();c.ellipse(g.x,g.y,g.r-5,g.r-5,0,0,Math.PI*2);c.stroke();for(let i=0;i<18;i++){let a=i*Math.PI*2/18;c.strokeStyle='#8f8678';c.lineWidth=1.5;c.beginPath();c.moveTo(g.x+Math.cos(a)*125,g.y+Math.sin(a)*125);c.lineTo(g.x+Math.cos(a)*142,g.y+Math.sin(a)*142);c.stroke()}if(s.spread>0){let r=24+s.spread*1.22;c.fillStyle='#e7c98e';c.beginPath();c.arc(g.x,g.y,r,0,Math.PI*2);c.fill();c.strokeStyle='#b58a53';c.lineWidth=3;c.stroke();c.strokeStyle='#f7e2b2';c.lineWidth=2;c.beginPath();c.arc(g.x-4,g.y-4,r-6,0,Math.PI*2);c.stroke();if(s.egg){c.fillStyle='#fff1cc';c.beginPath();c.ellipse(g.x-25,g.y-12,28,23,-.2,0,Math.PI*2);c.fill();c.strokeStyle='#c6a778';c.lineWidth=2;c.stroke();c.fillStyle='#e7a44f';c.beginPath();c.arc(g.x-23,g.y-12,10,0,Math.PI*2);c.fill()}if(s.greens)for(let i=0;i<7;i++){let a=i*2.4,x=g.x+Math.cos(a)*r*.45,y=g.y+Math.sin(a)*r*.42;c.fillStyle=i%2?'#83965f':'#a9ba7a';c.beginPath();c.ellipse(x,y,15,8,a,0,Math.PI*2);c.fill();c.strokeStyle='#617449';c.lineWidth=1;c.stroke()}if(s.sauce){c.strokeStyle='#8b4d35';c.lineWidth=4;c.lineCap='round';for(let i=0;i<4;i++){c.beginPath();c.moveTo(g.x-r*.55,g.y-r*.25+i*15);c.quadraticCurveTo(g.x,g.y-r*.1+i*12,g.x+r*.55,g.y-r*.3+i*15);c.stroke()}}}else{c.strokeStyle='#eee0c5';c.lineWidth=2;c.setLineDash([7,7]);c.beginPath();c.arc(g.x,g.y,35,0,Math.PI*2);c.stroke();c.setLineDash([]);c.fillStyle='#fff0d3';c.font='bold 14px sans-serif';c.fillText('鏊子中央',260,g.y+6)}c.save();c.translate(410,365);c.rotate(-.55);rr(-7,-4,15,61,5,'#6c4b36','#493529');rr(-22,-29,44,34,8,'#b7b4a4','#62574b');c.restore();rr(25,380,78,26,6,'#d6bd8d','#8a684a');c.strokeStyle='#9b7658';for(let i=0;i<5;i++){c.beginPath();c.moveTo(33+i*14,382);c.lineTo(33+i*14,404);c.stroke()}}function inside(p){return Math.hypot(p.x-g.x,p.y-g.y)<g.r+15}function point(e){let r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*520/r.width,y:(e.clientY-r.top)*480/r.height}}function pct(){return Math.min(100,Math.round(s.spread/90*55+(s.egg?15:0)+(s.greens?15:0)+(s.sauce?15:0)))}function msg(t){let el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.classList.remove('show'),1700)}function stage(){let n=s.spread===0?1:s.spread<90?1:!s.egg?2:!s.greens?3:!s.sauce?4:5;let labels=['','摊面糊','打鸡蛋','加生菜','刷酱','可以出餐'];$('stageLabel').textContent='第 '+n+' 步 / '+labels[n];$('progress').style.width=pct()+'%';$('progressText').textContent=pct()+'%';$('coins').textContent='¥ '+s.coins;$('orders').textContent=s.orders;$('batterCount').textContent='剩余 '+s.left+' 份';document.querySelectorAll('.ingredient').forEach(b=>{let k=b.dataset.k;b.classList.toggle('disabled',(k==='batter'&&(s.left<=0||s.spread>0))||(k==='egg'&&(s.spread===0||s.egg))||(k==='greens'&&(s.spread===0||s.greens||!s.egg))||(k==='sauce'&&(s.spread===0||s.sauce||!s.greens)))});$('hint').textContent=s.spread===0?'按住「面糊」拖到鏊子中央':s.spread<90?'在鏊子上连续画圈，把面糊摊开':!s.egg?'把鸡蛋拖到煎饼上':!s.greens?'把生菜拖到煎饼上':!s.sauce?'把酱料拖到煎饼上':'做好啦！点击「完成并出餐」'}function add(k){if(k==='batter'){if(s.spread){msg('这张煎饼已经有面糊啦');return}s.left--;s.spread=8;msg('面糊落锅啦！继续画圈摊开')}else if(!s.spread){msg('先放面糊，再添加食材');return}else if(k==='egg'){s.egg=true;msg('咔！打入一颗新鲜鸡蛋')}else if(k==='greens'){if(!s.egg){msg('先加鸡蛋，再放生菜');return}s.greens=true;msg('加上一把清爽生菜')}else if(k==='sauce'){if(!s.greens){msg('先放生菜，再刷酱');return}s.sauce=true;msg('秘制酱香，马上就好！')}draw();stage()}document.querySelectorAll('.ingredient').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.classList.contains('disabled')){msg('按提示顺序添加食材哦');return}s.drag={key:b.dataset.k,button:b};b.style.opacity='.5';try{b.setPointerCapture(e.pointerId)}catch(_){}}));function release(e){if(!s.drag)return;let d=s.drag;d.button.style.opacity='';let r=cv.getBoundingClientRect(),over=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom,p=point(e);if(over&&inside(p))add(d.key);else msg('把食材拖到鏊子上哦');s.drag=null;draw();stage()}window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);cv.addEventListener('pointerdown',e=>{if(s.drag||!s.spread)return;let p=point(e);if(!inside(p))return;s.painting=true;s.lastAngle=Math.atan2(p.y-g.y,p.x-g.x);try{cv.setPointerCapture(e.pointerId)}catch(_){}});cv.addEventListener('pointermove',e=>{if(!s.painting)return;let p=point(e);if(!inside(p))return;let a=Math.atan2(p.y-g.y,p.x-g.x);if(s.lastAngle!==null){let d=Math.atan2(Math.sin(a-s.lastAngle),Math.cos(a-s.lastAngle));s.spread=Math.min(100,s.spread+Math.abs(d)*14+.25);draw();stage()}s.lastAngle=a});function end(){s.painting=false;s.lastAngle=null;if(s.spread>=90)msg('摊得很均匀！可以加配料啦')}cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+$('serve').onclick=()=>{
+  if(customerTime<=0){
+    msg('顾客已经离开啦，等下一位顾客吧');
+    return;
+  }
+
+  if(s.spread<90){
+    msg('面糊还没摊开，多画几圈！');
+    return;
+  }
+
+  if(!s.egg||!s.greens||!s.sauce){
+    msg('还缺食材，按步骤完成这张煎饼');
+    return;
+  }
+
+  clearInterval(customerTimer);
+
+  s.coins+=18;
+  s.orders++;
+
+  const figure=$('customerFigure');
+  const face=figure.querySelector('.customer-emoji');
+  const bubble=$('customerBubble');
+
+  face.textContent='😄';
+  bubble.textContent='太香啦！谢谢老板！';
+
+  figure.classList.remove('happy');
+  void figure.offsetWidth;
+  figure.classList.add('happy');
+
+  const heart=document.createElement('div');
+  heart.className='customer-heart';
+  heart.textContent='💗';
+  figure.appendChild(heart);
+  setTimeout(()=>heart.remove(),1300);
+
+  msg('出餐成功！金币 +¥18 🎉');
+
+  customerNumber++;
+  setTimeout(startCustomer,1800);
+
+  s.spread=0;
+  s.egg=s.greens=s.sauce=false;
+
+  draw();
+  stage();
+};
+if(s.spread<90){msg('面糊还没摊开，多画几圈！');return}if(!s.egg||!s.greens||!s.sauce){msg('还缺食材，按步骤完成这张煎饼');return}clearInterval(customerTimer);s.coins+=18;s.orders++;msg('出餐成功！金币 +¥18 🎉');customerNumber++;setTimeout(startCustomer,1200);;s.spread=0;s.egg=s.greens=s.sauce=false;draw();stage()};$('reset').onclick=()=>{s.spread=0;s.egg=s.greens=s.sauce=false;s.left=3;draw();stage();msg('制作台整理好了，重新开始吧')};
 const ghost=$('dragGhost');
 const emojiFor={batter:'🥣',egg:'🥚',greens:'🥬',sauce:'🫙'};
 function moveGhost(e){
@@ -71,7 +147,68 @@ let customerTime=45;
 let customerTimer=null;
 let customerNumber=1;
 
+
 function startCustomer(){
+  clearInterval(customerTimer);
+  customerTime=45;
+
+  $('toast').classList.remove('show');
+
+  const figure=$('customerFigure');
+  const face=figure.querySelector('.customer-emoji');
+  const bubble=$('customerBubble');
+
+  figure.classList.remove('happy');
+  face.textContent='🧑🏻';
+  bubble.textContent='老板，来份煎饼！';
+
+  const order=$('.order');
+  order.querySelector('.eyebrow').textContent=
+    '今日第 '+customerNumber+' 位顾客';
+  order.querySelector('h2').textContent='经典薄脆煎饼';
+  order.querySelector('p').textContent=
+    '面糊 → 摊开 → 鸡蛋 → 生菜 → 刷酱';
+  order.querySelector('.pill').textContent='完成 +¥18';
+
+  let timerLabel=$('customerTimer');
+
+  if(!timerLabel){
+    timerLabel=document.createElement('div');
+    timerLabel.id='customerTimer';
+    timerLabel.style.cssText=
+      'font-size:12px;font-weight:bold;color:#a34e38;margin-top:4px';
+    order.querySelector('.order-copy').appendChild(timerLabel);
+  }
+
+  timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
+
+  customerTimer=setInterval(()=>{
+    customerTime--;
+    timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
+
+    if(customerTime===15){
+      face.textContent='😟';
+      bubble.textContent='老板，快好了吗？';
+      timerLabel.style.color='#c96f56';
+    }
+
+    if(customerTime===5){
+      face.textContent='😣';
+      bubble.textContent='快来不及啦！';
+    }
+
+    if(customerTime<=0){
+      clearInterval(customerTimer);
+      face.textContent='😞';
+      bubble.textContent='我等不及啦……';
+      msg('顾客等不及，离开啦！');
+
+      customerNumber++;
+      setTimeout(startCustomer,1800);
+    }
+  },1000);
+}
+{
   clearInterval(customerTimer);
   customerTime=45;
   $('toast').classList.remove('show');
