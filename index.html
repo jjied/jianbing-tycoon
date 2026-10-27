@@ -208,36 +208,5 @@ function startCustomer(){
     }
   },1000);
 }
-{
-  clearInterval(customerTimer);
-  customerTime=45;
-  $('toast').classList.remove('show');
-  const order=$('.order');
-  order.querySelector('.eyebrow').textContent=
-    '今日第 '+customerNumber+' 位顾客';
-  order.querySelector('h2').textContent='经典薄脆煎饼';
-  order.querySelector('p').textContent=
-    '面糊 → 摊开 → 鸡蛋 → 生菜 → 刷酱';
-  order.querySelector('.pill').textContent='完成 +¥18';
-  let timerLabel=$('customerTimer');
-  if(!timerLabel){
-    timerLabel=document.createElement('div');
-    timerLabel.id='customerTimer';
-    timerLabel.style.cssText=
-      'font-size:12px;font-weight:bold;color:#a34e38;margin-top:4px';
-    order.querySelector('.order-copy').appendChild(timerLabel);
-  }
-  timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
-  customerTimer=setInterval(()=>{
-    customerTime--;
-    timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
-    if(customerTime<=0){
-      clearInterval(customerTimer);
-      msg('顾客等不及，离开啦！下一位顾客来了');
-      customerNumber++;
-      setTimeout(startCustomer,1800);
-    }
-  },1000);
-}
 startCustomer();
 draw();stage()})();</script></body></html>
