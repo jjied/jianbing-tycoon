@@ -143,57 +143,75 @@ window.addEventListener('pointermove',moveGhost,{passive:true});
 window.addEventListener('pointerup',()=>ghost.classList.remove('show'));
 window.addEventListener('pointercancel',()=>ghost.classList.remove('show'));
 
-/* ===== 顾客订单系统 ===== */
+/* ===== 随机顾客系统 ===== */
 let customerTime=45;
 let customerTimer=null;
 let customerNumber=1;
 
+const customerTypes=[
+  {face:'🧑🏻',name:'学生',patience:45,speech:'老板，来份煎饼！'},
+  {face:'👩🏻',name:'上班族',patience:35,speech:'老板，麻烦快一点！'},
+  {face:'👨🏻',name:'年轻顾客',patience:55,speech:'今天想吃煎饼！'},
+  {face:'👵🏻',name:'奶奶',patience:60,speech:'给我做一份热乎的～'},
+  {face:'🧔🏻',name:'大叔',patience:40,speech:'来份招牌煎饼！'}
+];
+
+let currentCustomer=null;
 
 function startCustomer(){
   clearInterval(customerTimer);
-  customerTime=45;
+
+  currentCustomer=
+    customerTypes[Math.floor(Math.random()*customerTypes.length)];
+
+  customerTime=currentCustomer.patience;
 
   $('toast').classList.remove('show');
 
   const figure=$('customerFigure');
   const face=figure.querySelector('.customer-emoji');
   const bubble=$('customerBubble');
+  const order=document.querySelector('section.order');
 
   figure.classList.remove('happy');
-  face.textContent='🧑🏻';
-  bubble.textContent='老板，来份煎饼！';
+  face.textContent=currentCustomer.face;
+  bubble.textContent=currentCustomer.speech;
 
-  const order=document.querySelector('section.order');
   order.querySelector('.eyebrow').textContent=
-    '今日第 '+customerNumber+' 位顾客';
+    '今日第 '+customerNumber+' 位顾客 · '+currentCustomer.name;
+
   order.querySelector('h2').textContent='经典薄脆煎饼';
   order.querySelector('p').textContent=
     '面糊 → 摊开 → 鸡蛋 → 生菜 → 刷酱';
   order.querySelector('.pill').textContent='完成 +¥18';
 
   const timerLabel=$('customerTimer');
-timerLabel.style.color='#a34e38';
-timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
+  timerLabel.style.color='#a34e38';
+  timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
 
   customerTimer=setInterval(()=>{
     customerTime--;
-    timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
 
-    if(customerTime===15){
+    timerLabel.textContent=
+      '⏳ 剩余 '+customerTime+' 秒';
+
+    if(customerTime<=15){
       face.textContent='😟';
       bubble.textContent='老板，快好了吗？';
       timerLabel.style.color='#c96f56';
     }
 
-    if(customerTime===5){
+    if(customerTime<=5){
       face.textContent='😣';
       bubble.textContent='快来不及啦！';
     }
 
     if(customerTime<=0){
       clearInterval(customerTimer);
+
       face.textContent='😞';
       bubble.textContent='我等不及啦……';
+
       msg('顾客等不及，离开啦！');
 
       customerNumber++;
@@ -201,5 +219,7 @@ timerLabel.textContent='⏳ 剩余 '+customerTime+' 秒';
     }
   },1000);
 }
+
 startCustomer();
+
 draw();stage()})();</script></body></html>
