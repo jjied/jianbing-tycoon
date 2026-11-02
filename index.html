@@ -91,48 +91,31 @@
   return Math.min(100,Math.round(
     Math.min(s.spread,90)/90*55+ingredientProgress
   ));
-}function msg(t){let el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.classList.remove('show'),1700)}function stage(){
-  const names={
-    egg:'打鸡蛋',
-    greens:'加生菜',
-    sauce:'刷酱'
-  };
-
-  const required=currentRecipe.ingredients;
+}function msg(t){let el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.classList.remove('show'),1700)}
+function stage(){
+  const names={egg:'打鸡蛋',greens:'加生菜',sauce:'刷酱'};
+  const required=currentRecipe ? currentRecipe.ingredients : [];
   const added=required.filter(k=>s[k]).length;
-
-  let n=1;
-  let label='摊面糊';
-
+  let n=1,label='摊面糊';
   if(s.spread>=90){
     const next=required.find(k=>!s[k]);
-
-    if(next){
-      n=2+added;
-      label=names[next];
-    }else{
-      n=2+required.length;
-      label='可以出餐';
-    }
+    if(next){n=2+added;label=names[next];}
+    else{n=2+required.length;label='可以出餐';}
   }
-
   $('stageLabel').textContent='第 '+n+' 步 / '+label;
   $('progress').style.width=pct()+'%';
   $('progressText').textContent=pct()+'%';
   $('coins').textContent='¥ '+s.coins;
   $('orders').textContent=s.orders;
   $('batterCount').textContent='剩余 '+s.left+' 份';
-
+  const next=required.find(k=>!s[k]);
+  $('hint').textContent=s.spread===0?'按住「面糊」拖到鏊子中央':s.spread<90?'在鏊子上连续画圈，把面糊摊开':next?'把'+names[next]+'拖到煎饼上':'做好啦！点击「完成并出餐」';
   document.querySelectorAll('.ingredient').forEach(b=>{
     const k=b.dataset.k;
-
-    b.classList.toggle('disabled',
-      (k==='batter'&&(s.left<=0||s.spread>0))||
-      (k!=='batter'&&(s.spread===0||!required.includes(k)||s[k]))
-    );
+    b.classList.toggle('disabled',(k==='batter'&&(s.left<=0||s.spread>0))||(k!=='batter'&&(s.spread===0||!required.includes(k)||s[k])));
   });
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 )});$('hint').textContent=s.spread===0?'按住「面糊」拖到鏊子中央':s.spread<90?'在鏊子上连续画圈，把面糊摊开':!s.egg?'把鸡蛋拖到煎饼上':!s.greens?'把生菜拖到煎饼上':!s.sauce?'把酱料拖到煎饼上':'做好啦！点击「完成并出餐」'function add(k){
+function add(k){
   if(k==='batter'){
     if(s.spread){
       msg('这张煎饼已经有面糊啦');
