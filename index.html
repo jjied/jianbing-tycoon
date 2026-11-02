@@ -215,7 +215,7 @@ if(
   figure.appendChild(heart);
   setTimeout(()=>heart.remove(),1300);
 
-  msg('出餐成功！金币 +¥18 🎉');
+  msg('出餐成功！金币 +¥'+currentRecipe.reward+' 🎉');
 
   customerNumber++;
   setTimeout(startCustomer,1800);
