@@ -153,7 +153,67 @@ function add(k){
   draw();
   stage();
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                document.querySelectorAll('.ingredient').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.classList.contains('disabled')){msg('按提示顺序添加食材哦');return}s.drag={key:b.dataset.k,button:b};b.style.opacity='.5';try{b.setPointerCapture(e.pointerId)}catch(_){}}));function release(e){if(!s.drag)return;let d=s.drag;d.button.style.opacity='';let r=cv.getBoundingClientRect(),over=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom,p=point(e);if(over&&inside(p))add(d.key);else msg('把食材拖到鏊子上哦');s.drag=null;draw();stage()}window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);cv.addEventListener('pointerdown',e=>{if(s.drag||!s.spread)return;let p=point(e);if(!inside(p))return;s.painting=true;s.lastAngle=Math.atan2(p.y-g.y,p.x-g.x);try{cv.setPointerCapture(e.pointerId)}catch(_){}});cv.addEventListener('pointermove',e=>{if(!s.painting)return;let p=point(e);if(!inside(p))return;let a=Math.atan2(p.y-g.y,p.x-g.x);if(s.lastAngle!==null){let d=Math.atan2(Math.sin(a-s.lastAngle),Math.cos(a-s.lastAngle));s.spread=Math.min(100,s.spread+Math.abs(d)*14+.25);draw();stage()}s.lastAngle=a});function end(){s.painting=false;s.lastAngle=null;if(s.spread>=90)msg('摊得很均匀！可以加配料啦')}cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+document.querySelectorAll('.ingredient').forEach(b=>{
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    if(b.classList.contains('disabled')){
+      msg('按提示顺序添加食材哦');
+      return;
+    }
+    s.drag={key:b.dataset.k,button:b};
+    b.style.opacity='.5';
+    try{b.setPointerCapture(e.pointerId)}catch(_){}
+  });
+});
+
+function release(e){
+  if(!s.drag)return;
+  let d=s.drag;
+  d.button.style.opacity='';
+  let r=cv.getBoundingClientRect();
+  let over=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+  let p=point(e);
+  if(over&&inside(p))add(d.key);
+  else msg('把食材拖到鏊子上哦');
+  s.drag=null;
+  draw();
+  stage();
+}
+
+window.addEventListener('pointerup',release);
+window.addEventListener('pointercancel',release);
+
+cv.addEventListener('pointerdown',e=>{
+  if(s.drag||!s.spread)return;
+  let p=point(e);
+  if(!inside(p))return;
+  s.painting=true;
+  s.lastAngle=Math.atan2(p.y-g.y,p.x-g.x);
+  try{cv.setPointerCapture(e.pointerId)}catch(_){}
+});
+
+cv.addEventListener('pointermove',e=>{
+  if(!s.painting)return;
+  let p=point(e);
+  if(!inside(p))return;
+  let a=Math.atan2(p.y-g.y,p.x-g.x);
+  if(s.lastAngle!==null){
+    let d=Math.atan2(Math.sin(a-s.lastAngle),Math.cos(a-s.lastAngle));
+    s.spread=Math.min(100,s.spread+Math.abs(d)*14+.25);
+    draw();
+    stage();
+  }
+  s.lastAngle=a;
+});
+
+function end(){
+  s.painting=false;
+  s.lastAngle=null;
+  if(s.spread>=90)msg('摊得很均匀！可以加配料啦');
+}
+
+cv.addEventListener('pointerup',end);
+cv.addEventListener('pointercancel',end);
 $('serve').onclick=()=>{
   if(customerTime<=0){
     msg('顾客已经离开啦，等下一位顾客吧');
