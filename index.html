@@ -250,47 +250,451 @@ html, body {
 <button class="ingredient" data-k="crisp"><span class="emoji">🥠</span><b>薄脆</b><small>咔嚓酥脆</small></button></section><div class="bottom"><button class="action" id="reset">重新开始</button><button class="action primary" id="serve">🥡 完成并出餐</button></div><div class="note">试营业原型 · 支持触屏拖放与画圈摊面</div></div>
   <div class="drag-ghost" id="dragGhost" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
-<script>(()=>{const cv=document.querySelector('#game'),c=cv.getContext('2d'),$=id=>document.getElementById(id);let s={coins:0,orders:0,left:3,spread:0,egg:false,greens:false,sauce:false,ham:false,crisp:false,drag:null,painting:false,lastAngle:null};const g={x:260,y:245,r:166};function rr(x,y,w,h,r,fill,stroke){c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=3;c.stroke()}}function draw(){c.clearRect(0,0,520,480);c.fillStyle='#bd9875';c.fillRect(0,0,520,480);for(let i=0;i<10;i++){c.strokeStyle=i%2?'#a98261':'#d0ad86';c.lineWidth=2;c.beginPath();c.moveTo(0,i*52+8);c.lineTo(520,i*52+8);c.stroke()}rr(20,18,480,48,10,'#ead1a7','#75513b');c.fillStyle='#72503b';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('小火慢煎 · 用心做好每一张',260,47);rr(52,84,416,332,25,'#8e6a4f','#654433');rr(65,96,390,307,20,'#d6b38a','#f2d9b0');c.fillStyle='#5c4b3d';c.beginPath();c.ellipse(g.x,g.y+7,g.r+8,g.r+8,0,0,Math.PI*2);c.fill();c.fillStyle='#4b4138';c.beginPath();c.ellipse(g.x,g.y,g.r+4,g.r+4,0,0,Math.PI*2);c.fill();c.fillStyle='#777066';c.beginPath();c.ellipse(g.x,g.y,g.r,g.r,0,0,Math.PI*2);c.fill();c.strokeStyle='#b8a68c';c.lineWidth=5;c.beginPath();c.ellipse(g.x,g.y,g.r-5,g.r-5,0,0,Math.PI*2);c.stroke();for(let i=0;i<18;i++){let a=i*Math.PI*2/18;c.strokeStyle='#8f8678';c.lineWidth=1.5;c.beginPath();c.moveTo(g.x+Math.cos(a)*125,g.y+Math.sin(a)*125);c.lineTo(g.x+Math.cos(a)*142,g.y+Math.sin(a)*142);c.stroke()}if(s.spread>0){let r=24+s.spread*1.22;c.fillStyle='#e7c98e';c.beginPath();c.arc(g.x,g.y,r,0,Math.PI*2);c.fill();c.strokeStyle='#b58a53';c.lineWidth=3;c.stroke();c.strokeStyle='#f7e2b2';c.lineWidth=2;c.beginPath();c.arc(g.x-4,g.y-4,r-6,0,Math.PI*2);c.stroke();if(s.egg){c.fillStyle='#fff1cc';c.beginPath();c.ellipse(g.x-25,g.y-12,28,23,-.2,0,Math.PI*2);c.fill();c.strokeStyle='#c6a778';c.lineWidth=2;c.stroke();c.fillStyle='#e7a44f';c.beginPath();c.arc(g.x-23,g.y-12,10,0,Math.PI*2);c.fill()}if(s.greens)for(let i=0;i<7;i++){let a=i*2.4,x=g.x+Math.cos(a)*r*.45,y=g.y+Math.sin(a)*r*.42;c.fillStyle=i%2?'#83965f':'#a9ba7a';c.beginPath();c.ellipse(x,y,15,8,a,0,Math.PI*2);c.fill();c.strokeStyle='#617449';c.lineWidth=1;c.stroke()}if(s.sauce){
-  c.strokeStyle='#8b4d35';
-  c.lineWidth=4;
-  c.lineCap='round';
-  for(let i=0;i<4;i++){
-    c.beginPath();
-    c.moveTo(g.x-r*.55,g.y-r*.25+i*15);
-    c.quadraticCurveTo(g.x,g.y-r*.1+i*12,g.x+r*.55,g.y-r*.3+i*15);
-    c.stroke();
-  }
-}
+<script>(()=>{const cv=document.querySelector('#game'),c=cv.getContext('2d'),$=id=>document.getElementById(id);let s={coins:0,orders:0,left:3,spread:0,egg:false,greens:false,sauce:false,ham:false,crisp:false,drag:null,painting:false,lastAngle:null};const g={x:260,y:245,r:166};function rr(x,y,w,h,r,fill,stroke){c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=3;c.stroke()}}
+  
 
-if(s.ham){
-  c.strokeStyle='#914f43';
-  c.lineWidth=2;
-  for(let i=0;i<3;i++){
-    let x=g.x-38+i*38;
-    let y=g.y+42+(i%2)*13;
-    rr(x-15,y-9,30,18,6,'#d98d78','#914f43');
-    c.fillStyle='#f0b29a';
+function draw(){
+  c.clearRect(0,0,520,480);
+
+  // 木质桌面：多层色带和不规则木纹
+  const wood=c.createLinearGradient(0,0,520,480);
+  wood.addColorStop(0,'#e1c49a');
+  wood.addColorStop(.48,'#cba477');
+  wood.addColorStop(1,'#b98c62');
+  c.fillStyle=wood;
+  c.fillRect(0,0,520,480);
+
+  for(let i=0;i<7;i++){
+    const y=76+i*62;
+    c.strokeStyle=i%2?'#9e7653':'#f1d8ad';
+    c.globalAlpha=.42;
+    c.lineWidth=2;
     c.beginPath();
-    c.arc(x-5,y-2,3,0,Math.PI*2);
+    c.moveTo(0,y);
+    c.bezierCurveTo(130,y-4,350,y+5,520,y-2);
+    c.stroke();
+    c.globalAlpha=1;
+    c.strokeStyle='#8d6849';
+    c.globalAlpha=.2;
+    c.lineWidth=1;
+    c.beginPath();
+    c.moveTo(20,y+5);
+    c.quadraticCurveTo(170,y+1,300,y+7);
+    c.stroke();
+    c.globalAlpha=1;
+  }
+
+  for(let i=0;i<18;i++){
+    const x=(i*83+31)%520;
+    const y=(i*47+23)%470;
+    c.fillStyle='#79563d';
+    c.globalAlpha=.13;
+    c.beginPath();
+    c.ellipse(x,y,2+(i%3),1.2,0,0,Math.PI*2);
     c.fill();
+    c.globalAlpha=1;
+  }
+
+  // 顶部手绘小招牌
+  rr(18,14,484,54,13,'#f7e7c6','#806044');
+  rr(23,19,474,44,10,null,'#d0ad7c');
+  c.fillStyle='#715039';
+  c.font='bold 16px sans-serif';
+  c.textAlign='center';
+  c.fillText('小火慢煎 · 用心做好每一张',260,47);
+  c.textAlign='left';
+
+  // 木质炉台
+  rr(34,78,452,346,28,'#936846','#684832');
+  rr(42,86,436,330,24,'#d9b98e','#f0d9b4');
+  rr(49,93,422,316,20,'#c69d6e','#a77f58');
+
+  c.strokeStyle='#f0d5a8';
+  c.globalAlpha=.55;
+  c.lineWidth=2;
+
+  for(let i=0;i<5;i++){
+    const y=112+i*65;
+    c.beginPath();
+    c.moveTo(58,y);
+    c.quadraticCurveTo(240,y+3,462,y-2);
+    c.stroke();
+  }
+  c.globalAlpha=1;
+
+  // 锅柄
+  c.save();
+  c.translate(386,350);
+  c.rotate(.58);
+  rr(-8,-10,112,23,10,'#81583c','#563b2b');
+  rr(4,-6,88,15,7,'#bd8b58','#805638');
+  c.strokeStyle='#e0b77f';
+  c.lineWidth=2;
+  c.beginPath();
+  c.moveTo(18,0);
+  c.lineTo(82,0);
+  c.stroke();
+  c.restore();
+
+  // 手绘不规则圆形
+  function organicCircle(x,y,r,fill,stroke,lineWidth,phase,amount){
+    c.beginPath();
+    const steps=88;
+
+    for(let i=0;i<=steps;i++){
+      const a=i/steps*Math.PI*2;
+      const wobble=1+amount*(
+        .46*Math.sin(a*3+phase)+
+        .31*Math.sin(a*5-phase*1.7)+
+        .23*Math.sin(a*8+phase*.6)
+      );
+
+      const rad=r*wobble;
+      const px=x+Math.cos(a)*rad;
+      const py=y+Math.sin(a)*rad*.985;
+
+      if(i===0)c.moveTo(px,py);
+      else c.lineTo(px,py);
+    }
+
+    c.closePath();
+
+    if(fill){
+      c.fillStyle=fill;
+      c.fill();
+    }
+
+    if(stroke){
+      c.strokeStyle=stroke;
+      c.lineWidth=lineWidth;
+      c.stroke();
+    }
+  }
+
+  // 锅底阴影与金属锅身
+  c.save();
+  c.shadowColor='#49372b66';
+  c.shadowBlur=13;
+  c.shadowOffsetY=8;
+
+  const body=c.createRadialGradient(
+    g.x-52,g.y-65,18,
+    g.x,g.y,g.r+20
+  );
+
+  body.addColorStop(0,'#827b6d');
+  body.addColorStop(.7,'#5f594f');
+  body.addColorStop(1,'#39342f');
+
+  organicCircle(
+    g.x,g.y,g.r+12,
+    body,'#453b32',5,.7,.012
+  );
+
+  c.restore();
+
+  organicCircle(
+    g.x,g.y,g.r+1,
+    '#777064','#b9a78c',6,1.4,.009
+  );
+
+  organicCircle(
+    g.x,g.y,g.r-8,
+    '#77776e','#514b43',3,.3,.006
+  );
+
+  organicCircle(
+    g.x,g.y,g.r-15,
+    null,'#d0bda0',2,2,.008
+  );
+
+  organicCircle(
+    g.x,g.y,g.r-22,
+    null,'#625d53',2,.8,.006
+  );
+
+  // 锅沿细节
+  for(let i=0;i<24;i++){
+    const a=i*Math.PI*2/24;
+    const r1=g.r-17;
+    const r2=g.r-28-(i%3)*2;
+
+    c.strokeStyle=i%2?'#d1c0a4':'#49443d';
+    c.globalAlpha=.55;
+    c.lineWidth=1.4;
+    c.beginPath();
+    c.moveTo(
+      g.x+Math.cos(a)*r1,
+      g.y+Math.sin(a)*r1
+    );
+    c.lineTo(
+      g.x+Math.cos(a)*r2,
+      g.y+Math.sin(a)*r2
+    );
+    c.stroke();
+    c.globalAlpha=1;
+  }
+
+  // 面饼
+  if(s.spread>0){
+    const r=Math.min(g.r-18,24+s.spread*1.22);
+
+    const batter=c.createRadialGradient(
+      g.x-35,g.y-42,10,
+      g.x,g.y,r+8
+    );
+
+    batter.addColorStop(0,'#f6dfab');
+    batter.addColorStop(.72,'#e9ca8d');
+    batter.addColorStop(1,'#c99c5e');
+
+    organicCircle(
+      g.x,g.y,r+3,
+      '#bb8b51','#8e663f',2.5,1.2,.025
+    );
+
+    organicCircle(
+      g.x,g.y,r,
+      batter,'#f2d8a4',2,2.1,.018
+    );
+
+    organicCircle(
+      g.x-2,g.y-2,r-7,
+      null,'#fff0c9',1.5,.5,.012
+    );
+
+    // 面饼上的烘烤色点
+    for(let i=0;i<11;i++){
+      const a=i*2.399;
+      const rr0=r*(.28+(i%4)*.12);
+      const x=g.x+Math.cos(a)*rr0;
+      const y=g.y+Math.sin(a)*rr0*.82;
+
+      c.fillStyle=i%2?'#c99d65':'#f8e5bb';
+      c.globalAlpha=.27;
+      c.beginPath();
+      c.ellipse(
+        x,y,3+(i%3),2+(i%2),
+        a,0,Math.PI*2
+      );
+      c.fill();
+      c.globalAlpha=1;
+    }
+
+    // 鸡蛋
+    if(s.egg){
+      c.save();
+      c.shadowColor='#805e3e55';
+      c.shadowBlur=5;
+      c.shadowOffsetY=2;
+
+      const eggWhite=c.createRadialGradient(
+        g.x-30,g.y-26,3,
+        g.x-22,g.y-10,35
+      );
+
+      eggWhite.addColorStop(0,'#fff9e8');
+      eggWhite.addColorStop(1,'#eadbb9');
+
+      c.fillStyle=eggWhite;
+      c.beginPath();
+      c.ellipse(
+        g.x-25,g.y-12,31,25,
+        -.2,0,Math.PI*2
+      );
+      c.fill();
+      c.restore();
+
+      c.strokeStyle='#c9b58e';
+      c.lineWidth=1.8;
+      c.stroke();
+
+      const yolk=c.createRadialGradient(
+        g.x-27,g.y-17,1,
+        g.x-23,g.y-12,13
+      );
+
+      yolk.addColorStop(0,'#ffd77a');
+      yolk.addColorStop(1,'#e59a42');
+
+      c.fillStyle=yolk;
+      c.beginPath();
+      c.arc(g.x-23,g.y-12,11,0,Math.PI*2);
+      c.fill();
+
+      c.fillStyle='#fff1c5';
+      c.beginPath();
+      c.arc(g.x-27,g.y-17,3,0,Math.PI*2);
+      c.fill();
+    }
+
+    // 生菜
+    if(s.greens){
+      for(let i=0;i<8;i++){
+        const a=i*2.4;
+        const x=g.x+Math.cos(a)*r*.43;
+        const y=g.y+Math.sin(a)*r*.38;
+
+        c.save();
+        c.translate(x,y);
+        c.rotate(a+.45);
+
+        c.fillStyle=i%2?'#91a76b':'#b4c183';
+        c.strokeStyle='#637749';
+        c.lineWidth=1.4;
+
+        c.beginPath();
+        c.moveTo(-17,0);
+        c.quadraticCurveTo(-8,-14,5,-8);
+        c.quadraticCurveTo(19,-1,15,5);
+        c.quadraticCurveTo(1,13,-17,0);
+        c.fill();
+        c.stroke();
+
+        c.strokeStyle='#e2e5b4';
+        c.lineWidth=1;
+        c.beginPath();
+        c.moveTo(-13,0);
+        c.quadraticCurveTo(0,1,12,4);
+        c.stroke();
+
+        c.restore();
+      }
+    }
+
+    // 酱料
+    if(s.sauce){
+      c.lineCap='round';
+
+      for(let i=0;i<4;i++){
+        c.strokeStyle='#87482f';
+        c.lineWidth=5;
+
+        c.beginPath();
+        c.moveTo(
+          g.x-r*.55,
+          g.y-r*.25+i*15
+        );
+
+        c.quadraticCurveTo(
+          g.x-r*.12,
+          g.y-r*.08+i*13,
+          g.x+r*.12,
+          g.y-r*.22+i*14
+        );
+
+        c.quadraticCurveTo(
+          g.x+r*.37,
+          g.y-r*.35+i*13,
+          g.x+r*.55,
+          g.y-r*.2+i*15
+        );
+
+        c.stroke();
+
+        c.strokeStyle='#c37b4c';
+        c.lineWidth=1.4;
+        c.stroke();
+      }
+    }
+
+    // 火腿
+    if(s.ham){
+      for(let i=0;i<3;i++){
+        const x=g.x-38+i*38;
+        const y=g.y+42+(i%2)*13;
+
+        rr(
+          x-16,y-10,32,20,7,
+          '#c9765d','#884b3c'
+        );
+
+        rr(
+          x-12,y-7,24,13,5,
+          '#e8a18a',null
+        );
+
+        c.fillStyle='#f4c09c';
+        c.beginPath();
+        c.arc(x-5,y-2,2.5,0,Math.PI*2);
+        c.fill();
+      }
+    }
+
+    // 薄脆
+    if(s.crisp){
+      c.save();
+      c.translate(g.x+35,g.y-35);
+      c.rotate(-.35);
+
+      rr(
+        -49,-11,98,22,5,
+        '#d6a35d','#8d653a'
+      );
+
+      rr(
+        -43,-7,86,14,3,
+        '#e9c37f',null
+      );
+
+      c.strokeStyle='#f5dda5';
+      c.lineWidth=2;
+
+      for(let i=-35;i<=35;i+=14){
+        c.beginPath();
+        c.moveTo(i,-7);
+        c.lineTo(i+5,7);
+        c.stroke();
+      }
+
+      c.restore();
+    }
+
+  }else{
+    organicCircle(
+      g.x,g.y,38,
+      null,'#f4e4c6',2,1,.035
+    );
+
+    c.setLineDash([6,7]);
+    c.strokeStyle='#fff0d3';
+    c.lineWidth=2;
+    c.beginPath();
+    c.arc(g.x,g.y,31,0,Math.PI*2);
+    c.stroke();
+    c.setLineDash([]);
+
+    c.fillStyle='#fff2d8';
+    c.font='bold 14px sans-serif';
+    c.textAlign='center';
+    c.fillText('鏊子中央',g.x,g.y+5);
+    c.textAlign='left';
+  }
+
+  // 炉台边角的木铲和收边装饰
+  c.save();
+  c.translate(88,365);
+  c.rotate(-.42);
+
+  rr(-5,-26,10,68,5,'#80583d','#563b2c');
+  rr(-19,-43,38,27,10,'#c4b49a','#74624e');
+
+  c.restore();
+
+  rr(25,380,78,26,7,'#dfc79a','#8a684a');
+
+  c.strokeStyle='#a17c58';
+  c.lineWidth=1.5;
+
+  for(let i=0;i<5;i++){
+    c.beginPath();
+    c.moveTo(33+i*14,383);
+    c.lineTo(33+i*14,403);
+    c.stroke();
   }
 }
 
-if(s.crisp){
-  c.save();
-  c.translate(g.x+35,g.y-35);
-  c.rotate(-.35);
-  rr(-48,-9,96,18,4,'#d9a95f','#956b3f');
-  c.strokeStyle='#f2d59c';
-  c.lineWidth=2;
-  for(let i=-35;i<=35;i+=14){
-    c.beginPath();
-    c.moveTo(i,-6);
-    c.lineTo(i+5,6);
-    c.stroke();
-  }
-  c.restore();
-}}else{c.strokeStyle='#eee0c5';c.lineWidth=2;c.setLineDash([7,7]);c.beginPath();c.arc(g.x,g.y,35,0,Math.PI*2);c.stroke();c.setLineDash([]);c.fillStyle='#fff0d3';c.font='bold 14px sans-serif';c.fillText('鏊子中央',260,g.y+6)}c.save();c.translate(410,365);c.rotate(-.55);rr(-7,-4,15,61,5,'#6c4b36','#493529');rr(-22,-29,44,34,8,'#b7b4a4','#62574b');c.restore();rr(25,380,78,26,6,'#d6bd8d','#8a684a');c.strokeStyle='#9b7658';for(let i=0;i<5;i++){c.beginPath();c.moveTo(33+i*14,382);c.lineTo(33+i*14,404);c.stroke()}}function inside(p){return Math.hypot(p.x-g.x,p.y-g.y)<g.r+15}function point(e){let r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*520/r.width,y:(e.clientY-r.top)*480/r.height}}function pct(){
+function inside(p){return Math.hypot(p.x-g.x,p.y-g.y)<g.r+15}function point(e){let r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*520/r.width,y:(e.clientY-r.top)*480/r.height}}function pct(){
   if(!currentRecipe)return 0;
 
   const required=currentRecipe.ingredients;
