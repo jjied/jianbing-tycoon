@@ -154,7 +154,10 @@ function stage(){
   $('hint').textContent=s.spread===0?'按住「面糊」拖到鏊子中央':s.spread<90?'在鏊子上连续画圈，把面糊摊开':next?'把'+names[next]+'拖到煎饼上':'做好啦！点击「完成并出餐」';
   document.querySelectorAll('.ingredient').forEach(b=>{
     const k=b.dataset.k;
-    b.classList.toggle('disabled',(k==='batter'&&(s.left<=0||s.spread>0))||(k!=='batter'&&(s.spread===0||!required.includes(k)||s[k])));
+    b.classList.toggle('disabled',
+  (k==='batter'&&(s.left<=0||s.spread>0))||
+  (k!=='batter'&&(s.spread<90||!required.includes(k)||s[k]))
+);
   });
 }
 function add(k){
@@ -168,8 +171,8 @@ function add(k){
     s.spread=8;
     msg('面糊落锅啦！继续画圈摊开');
 
-  }else if(!s.spread){
-    msg('先放面糊，再添加食材');
+  }else if(s.spread<90){
+    msg('面饼还没有摊开哦！继续画圈～');
     return;
 
   }else{
