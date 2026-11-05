@@ -283,16 +283,43 @@ if(
 
   clearInterval(customerTimer);
 
-  s.coins+=currentRecipe.reward;
-  s.orders++;
+// ===== 煎饼制作评价系统 =====
+const timeRatio = customerTime / currentCustomer.patience;
+
+let ratingName = '';
+let ratingStars = '';
+let ratingBonus = 0;
+let ratingMessage = '';
+
+if(timeRatio >= 0.65){
+  ratingName = '完美出餐';
+  ratingStars = '⭐⭐⭐';
+  ratingBonus = 10;
+  ratingMessage = '老板手艺太棒啦！';
+}else if(timeRatio >= 0.35){
+  ratingName = '手艺不错';
+  ratingStars = '⭐⭐';
+  ratingBonus = 5;
+  ratingMessage = '这份煎饼真不错！';
+}else{
+  ratingName = '顺利完成';
+  ratingStars = '⭐';
+  ratingBonus = 0;
+  ratingMessage = '谢谢老板，辛苦啦！';
+}
+
+// 原配方奖励 + 评价额外奖励
+const totalReward = currentRecipe.reward + ratingBonus;
+s.coins += totalReward;
+s.orders++;
 
   const figure=$('customerFigure');
   const face=figure.querySelector('.customer-emoji');
   const bubble=$('customerBubble');
 
   face.textContent='😄';
-  bubble.textContent='太香啦！谢谢老板！';
-
+bubble.textContent=ratingStars+' '+ratingName+'！';
+  
   figure.classList.remove('happy');
   void figure.offsetWidth;
   figure.classList.add('happy');
@@ -303,8 +330,14 @@ if(
   figure.appendChild(heart);
   setTimeout(()=>heart.remove(),1300);
 
-  msg('出餐成功！金币 +¥'+currentRecipe.reward+' 🎉');
-
+  msg(
+  ratingStars+' '+ratingName+'！'+
+  ' '+ratingMessage+
+  ' 基础奖励 ¥'+currentRecipe.reward+
+  ' + 评价奖励 ¥'+ratingBonus+
+  '，共获得 ¥'+totalReward+' 🎉'
+);
+  
   customerNumber++;
   setTimeout(startCustomer,1800);
 
